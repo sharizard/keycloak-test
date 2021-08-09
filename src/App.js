@@ -1,24 +1,31 @@
-import logo from './logo.svg';
 import './App.css';
+import { ReactKeycloakProvider } from '@react-keycloak/web';
+import keycloak from './keycloack';
+import { AppRouter } from './routes';
+
+const initOptions = { pkceMethod: 'S256' }
+
 
 function App() {
+  const eventLogger = (event, error) => {
+    console.log('onKeycloakEvent', event, error)
+  }
+  
+  const tokenLogger = (tokens) => {
+    console.log('onKeycloakTokens', tokens)
+  }
+
   return (
+    <ReactKeycloakProvider 
+      authClient={keycloak} 
+      onEvent={eventLogger}
+      onTokens={tokenLogger}
+      initOptions={initOptions}  
+    >
     <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+      <AppRouter />
     </div>
+    </ReactKeycloakProvider>
   );
 }
 
